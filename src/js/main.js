@@ -26,10 +26,10 @@ let money, time;
 startBtn.addEventListener("click", function(){
    
     time = prompt("Введите дату в формате YYYY-MM-DD", '');
-    money = + prompt("Ваш бюджет на месяц?", "");
+    money = + prompt("Ваш бюджет на месяц?(What is your monthly budget?)", "");
 
     while(isNaN(money) || money == "" || money == null){
-        money = + prompt("Ваш бюджет на месяц?", "");
+        money = + prompt("Ваш бюджет на месяц?(What is your monthly budget?)", "");
     }
     appData.budget = money;
     appData.timeData = time;
@@ -72,16 +72,16 @@ countBtn.addEventListener("click", function(){
         dayBudgetValue.textContent = appData.moneyPerDay;
     
         if (appData.moneyPerDay < 100){
-            levelValue.textContent = "Минимальный доход";
+            levelValue.textContent = "Минимальный доход(Minimum income)";
         } else if (appData.moneyPerDay >200 && appData.moneyPerDay < 2000){
-            levelValue.textContent = "Средний доход";
+            levelValue.textContent = "Средний доход(Average income)";
         } else if (appData.moneyPerDay > 2000 ){
-            levelValue.textContent = "выше среднего доход";
+            levelValue.textContent = "Выше среднего доход(Above average income)";
         }else {
-            levelValue.textContent = "произошла ошибка";
+            levelValue.textContent = "Произошла ошибка(An error has occurred)";
         }
     } else {
-        dayBudgetValue.textContent = "Произошла ошибка!";
+        dayBudgetValue.textContent = "Произошла ошибка!(An error has occurred)";
     }
    
 });
