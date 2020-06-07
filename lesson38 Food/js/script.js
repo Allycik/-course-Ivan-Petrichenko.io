@@ -48,11 +48,13 @@ const tabs = document.querySelectorAll(".tabheader__item "),
       const deadline = "2020-06-15";
 
       function getTimeRemaining(endtime) {
-          const t = Date.parse(endtime) - Date.parse(new Date()),
+          const t = Date.parse(endtime) - Date.parse(new Date()), // разница в милиссек-х между временем конечным и сегодняшним 
               days = Math.floor( (t/(1000*60*60*24)) ),
-              seconds = Math.floor( (t/1000) % 60 ),
+              hours = Math.floor( (t/(1000*60*60) % 24) ),
               minutes = Math.floor( (t/1000/60) % 60 ),
-              hours = Math.floor( (t/(1000*60*60) % 24) );
+              seconds = Math.floor( (t/1000) % 60 );
+              
+        
   
           return {
               'total': t,
@@ -78,7 +80,7 @@ const tabs = document.querySelectorAll(".tabheader__item "),
               hours = timer.querySelector('#hours'),
               minutes = timer.querySelector('#minutes'),
               seconds = timer.querySelector('#seconds'),
-              timeInterval = setInterval(updateClock, 1000);
+              timeInterval = setInterval(updateClock, 1000);// перезапускаем через секунду 
   
           updateClock();
   
@@ -97,6 +99,49 @@ const tabs = document.querySelectorAll(".tabheader__item "),
       }
   
       setClock('.timer', deadline);
+
+      //modal 
+
+      const modalTrigger = document.querySelectorAll("[data-modal]"),
+            modal = document.querySelector(".modal"),
+            modalCloseBtn = document.querySelector("[data-close]");
+
+
+            modalTrigger.forEach(item => {
+                item.addEventListener("click", () => {
+                    modal.classList.add("show"); // 1й вариант открыть модальное окно и скрыть 
+                    modal.classList.remove("hide");// 1й вариант открыть модальное окно и скрыть 
+                    // modal.classList.toggle("show"); // 2й вариант открыть модальное окно и скрыть 
+                    document.body.style.overflow = 'hidden'; //запретили прокрутку страницы
+                });
+            });
+
+            function closeModal () {
+                modal.classList.add("hide");
+                modal.classList.remove('show');
+                // modal.classList.toggle("show");// 2й вариант открыть модальное окно и скрыть 
+                document.body.style.overflow = ''; //восстановили прокрутку 
+
+            };
+            
+
+            modalCloseBtn.addEventListener("click", closeModal);
+
+            modal.addEventListener("click", (e) => {
+                if (e.target === modal){
+               closeModal();
+                }
+            });
+
+            document.addEventListener("keydown", (e) => {
+                if (e.code === 'Escape' && modal.classList.contains("show")) {
+                    closeModal();
+                }
+            });
+
+     
+          
+      
 
 
       
