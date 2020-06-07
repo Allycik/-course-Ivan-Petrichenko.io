@@ -107,20 +107,24 @@ const tabs = document.querySelectorAll(".tabheader__item "),
             modalCloseBtn = document.querySelector("[data-close]");
 
 
+            function openModal() {
+            modal.classList.add("show"); // 1й вариант открыть модальное окно и скрыть 
+            modal.classList.remove("hide");// 1й вариант открыть модальное окно и скрыть 
+            // modal.classList.toggle("show"); // 2й вариант открыть модальное окно и скрыть 
+            document.body.style.overflow = 'hidden'; //запретили прокрутку страницы
+            clearInterval(modalTimerId);// отменили вызов модального окна через 3 сек
+            }
+
+
             modalTrigger.forEach(item => {
-                item.addEventListener("click", () => {
-                    modal.classList.add("show"); // 1й вариант открыть модальное окно и скрыть 
-                    modal.classList.remove("hide");// 1й вариант открыть модальное окно и скрыть 
-                    // modal.classList.toggle("show"); // 2й вариант открыть модальное окно и скрыть 
-                    document.body.style.overflow = 'hidden'; //запретили прокрутку страницы
-                });
+                item.addEventListener("click", openModal)
             });
 
             function closeModal () {
-                modal.classList.add("hide");
-                modal.classList.remove('show');
-                // modal.classList.toggle("show");// 2й вариант открыть модальное окно и скрыть 
-                document.body.style.overflow = ''; //восстановили прокрутку 
+            modal.classList.add("hide");
+            modal.classList.remove('show');
+            // modal.classList.toggle("show");// 2й вариант открыть модальное окно и скрыть 
+            document.body.style.overflow = ''; //восстановили прокрутку 
 
             };
             
@@ -139,6 +143,18 @@ const tabs = document.querySelectorAll(".tabheader__item "),
                 }
             });
 
+            const modalTimerId = setTimeout(openModal,3000);//появление модального окна через 3 сек 
+
+           // появление модального окна когда прокрутил в самый низ страницы 
+            function showModalByScroll (){
+                if(window.pageYOffset + document.documentElement.clientHeight >= document.
+                    documentElement.scrollHeight){
+                    openModal();
+                    window.removeEventListener("scroll",showModalByScroll); //удалили что бы не показывалось больше чем  раз 
+                }
+            }
+
+            window.addEventListener("scroll",showModalByScroll)
      
           
       
