@@ -45,7 +45,7 @@ if (event.target && event.target.classList.contains ("tabheader__item")) {
 
 // timer
 
-      const deadline = "2020-06-15";
+      const deadline = "2020-09-15";
 
 function getTimeRemaining(endtime) {
 const t = Date.parse(endtime) - Date.parse(new Date()), // разница в милиссек-х между временем конечным и сегодняшним 
@@ -103,8 +103,8 @@ setClock('.timer', deadline);
 //modal 
 
 const modalTrigger = document.querySelectorAll("[data-modal]"),
-    modal = document.querySelector(".modal"),
-    modalCloseBtn = document.querySelector("[data-close]");
+      modal = document.querySelector(".modal");
+     
 
 
     function openModal() {
@@ -129,10 +129,8 @@ document.body.style.overflow = ''; //восстановили прокрутку
 };
 
 
-modalCloseBtn.addEventListener("click", closeModal);
-
 modal.addEventListener("click", (e) => {
-                if (e.target === modal){
+     if (e.target === modal || e.target.getAttribute("data-close") === ""){
     closeModal();
     }
 });
@@ -143,7 +141,7 @@ document.addEventListener("keydown", (e) => {
     }
 });
 
-const modalTimerId = setTimeout(openModal,3000);//появление модального окна через 3 сек 
+const modalTimerId = setTimeout(openModal,50000);//появление модального окна через 50 сек 
 
 // появление модального окна когда прокрутил в самый низ страницы 
     function showModalByScroll (){
@@ -229,6 +227,90 @@ const modalTimerId = setTimeout(openModal,3000);//появление модал�
 
      ).render();
 
+
+     //forms
+
+     const forms = document.querySelectorAll("form");
+
+     const message = {
+      loading: "img/form/original.svg",
+      success: "Спасибо ,скоро с вами свяжемся",
+      failure : "Что-то пошло не так..."
+     };
+
+     forms.forEach(item => {
+         postData(item);
+     })
+
+     function postData (form) {
+         form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          
+          const statusMessage = document.createElement("img");
+          statusMessage.src = message.loading;
+          statusMessage.style.cssText= `
+          display :block;
+          margin : 0 auto;
+          `;
+
+          
+          form.insertAdjacentElement("afterend", statusMessage);
+
+          const request = new XMLHttpRequest();
+          request.open('POST','server.php');
+           
+          request.setRequestHeader("Content - type", "application/json");
+          const formData = new formData(form);
+          
+          const object = {};
+          formData.forEach(function(value, key) {
+              object[key] = value;
+          });
+          const json = JSON.stringify(object);
+          
+          request.send(json);
+
+          request.addEventListener("load", () => {
+              if(request.status === 200){
+                  console.log(request.response);
+                  showThanksModal(message.success);
+                  form.reset();// все данные сбросили;
+                      statusMessage.remove();
+              } else {
+               showThanksModal(message.failure);
+              }
+              });
+         });
+        }
+
+
+        function showThanksModal (){
+            const prevModalDialog = document.querySelector(".modal__dialog");
+
+            prevModalDialog.classList.add("hide");
+            openModal();
+
+            const thanksModal = document.createElement("div");
+            thanksModal.classList.add("modal__dialog");
+            thanksModal.innerHTML = `
+            <div class = "modal__content">
+            <div class = "modal__close" data-close>&times;</div>
+            <div class = "modal__title">${message}</div>
+            </div>`;
+
+            document.querySelector(".modal").append(thanksModal);
+            setTimeout(() => {
+            thanksModal.remove();
+            prevModalDialog.classList.add("show");
+            prevModalDialog.classList.remove("hide");
+            closeModal();
+
+            },4000);
+        }
+
+
+    });
+
           
       
 
@@ -247,4 +329,3 @@ const modalTimerId = setTimeout(openModal,3000);//появление модал�
 
 
 
-});
