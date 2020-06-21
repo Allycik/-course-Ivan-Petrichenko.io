@@ -246,7 +246,7 @@ const modalTimerId = setTimeout(openModal,50000);//появление модал
          form.addEventListener("submit", (e) => {
           e.preventDefault();
           
-          const statusMessage = document.createElement("img");
+          const statusMessage = document.createElement("img"); // СПИНЕР
           statusMessage.src = message.loading;
           statusMessage.style.cssText= `
           display :block;
@@ -254,34 +254,43 @@ const modalTimerId = setTimeout(openModal,50000);//появление модал
           `;
 
           
-          form.insertAdjacentElement("afterend", statusMessage);
+          form.insertAdjacentElement("afterend", statusMessage); // вставили спинер под формой
 
-          const request = new XMLHttpRequest();
-          request.open('POST','server.php');
+
+          
+        //   const request = new XMLHttpRequest();
+        //   request.open('POST','server.php');
            
-          request.setRequestHeader("Content - type", "application/json");
-          const formData = new formData(form);
+          
+          const formData = new FormData(form);
           
           const object = {};
           formData.forEach(function(value, key) {
               object[key] = value;
           });
-          const json = JSON.stringify(object);
+         
           
-          request.send(json);
-
-          request.addEventListener("load", () => {
-              if(request.status === 200){
-                  console.log(request.response);
-                  showThanksModal(message.success);
-                  form.reset();// все данные сбросили;
-                      statusMessage.remove();
-              } else {
-               showThanksModal(message.failure);
-              }
-              });
+        //   отправка запрос на сервер 
+          fetch('server.php', {
+            method: "POST",
+            headers: {
+                "Content-type":"application/json"
+            },
+            body:JSON.stringify(object)
+        })
+        .then(data => data.text())
+        .then(data => { // data - это те данные котор вернул сервер (возращает Promis)
+            console.log(data.response);
+             showThanksModal(message.success);
+             statusMessage.remove();
+        }).catch(() => {
+            showThanksModal(message.failure);
+        }).finally(() => {
+            form.reset();// все данные сбросили;
+        })
          });
-        }
+        };
+       
 
 
         function showThanksModal (){
@@ -306,7 +315,10 @@ const modalTimerId = setTimeout(openModal,50000);//появление модал
             closeModal();
 
             },4000);
-        }
+        };
+
+
+
 
 
     });
